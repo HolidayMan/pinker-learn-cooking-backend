@@ -1,7 +1,6 @@
 import os
 
 from django.db import models
-from pinker_backend.settings import MEDIA_ROOT
 
 
 class Category(models.Model):
