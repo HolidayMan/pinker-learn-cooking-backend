@@ -7,11 +7,6 @@ class AdminCategory(admin.ModelAdmin):
     list_display = ['name', 'image']
 
 
-@admin.register(Measure)
-class AdminMeasure(admin.ModelAdmin):
-    list_display = ['name']
-
-
 @admin.register(Ingredient)
 class AdminIngredient(admin.ModelAdmin):
     list_display = ['name']
@@ -24,4 +19,4 @@ class AdminDish(admin.ModelAdmin):
 
 @admin.register(DishIngredient)
 class AdminDishIngredient(admin.ModelAdmin):
-    list_display = ['dish', 'ingredient', 'measure', 'amount']
+    list_display = ['dish', 'ingredient', 'amount']

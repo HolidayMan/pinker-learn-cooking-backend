@@ -31,7 +31,6 @@ class Dish(models.Model):
 class DishIngredient(models.Model):
     dish = models.ForeignKey('Dish', on_delete=models.CASCADE)
     ingredient = models.ForeignKey('Ingredient', on_delete=models.CASCADE)
-    measure = models.ForeignKey('Measure', on_delete=models.DO_NOTHING)
     amount = models.CharField(max_length=32)
 
     class Meta:
@@ -49,14 +48,3 @@ class Ingredient(models.Model):
     class Meta:
         verbose_name = "Ingredient"
         verbose_name_plural = "Ingredients"
-
-
-class Measure(models.Model):
-    name = models.CharField(max_length=256, unique=True)
-
-    def __str__(self):
-        return f"{self.name}"
-
-    class Meta:
-        verbose_name = "Measure"
-        verbose_name_plural = "Measures"
