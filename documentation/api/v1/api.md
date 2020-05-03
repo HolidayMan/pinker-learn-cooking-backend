@@ -14,7 +14,7 @@ All the next urls will be relative to base url
 `categories/<int>/dishes` **GET** - get name, category and photo url for the
  exact dish
 
-#Dishes
+# Dishes
 
 `dishes/all` **GET** - get full list of dishes *without* included parameters
  like ingredients etc.
