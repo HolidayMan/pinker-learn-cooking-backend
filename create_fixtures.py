@@ -12,10 +12,10 @@ choices = {
     'second_courses': "Вторые блюда"
 }
 
-photos = sorted(['images/main/' + photo for photo in os.listdir('media/images/main')])
+categories_folders_names = sorted(['images/main/' + photo for photo in os.listdir('media/images/main')])
 
 categories = []
-for choice, photo_path in zip(choices, photos):
+for choice, photo_path in zip(choices, categories_folders_names):
     categories.append({
         "model": "api.category",
         "pk": counter,
@@ -76,10 +76,10 @@ dishes = []
 counter = 1
 category_id = 1
 for folder in ['media/images/DishesMenu/' + folder for folder in sorted(os.listdir('media/images/DishesMenu'))]:
-    photos = sorted(['images/main/' + photo for photo in os.listdir(folder)])
     folder_name = folder.split(os.path.sep)[-1]
+    categories_folders_names = sorted([f'images/DishesMenu/{folder_name}/{photo}'for photo in os.listdir(folder)])
     item_names = dish_photos_names[folder_name]
-    for photo_path in photos:
+    for photo_path in categories_folders_names:
         dishes.append({
             "model": "api.dish",
             "pk": counter,
