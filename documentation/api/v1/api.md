@@ -1,23 +1,21 @@
 Base url - `api/v1/`
 
 All the next urls will be relative to base url
-#Categories
-`categories/all` **GET** - get all categories *without* it's dishes
 
-`categories/all/full` **GET** - get all categories *with* it's dishes
+# Categories
+`categories/all` **GET** - get all categories *without* it's dishes. Returns array of [Category](./objects.md/#category) objects
 
-`categories/<int>` **GET** - get exact category by it's id
+`categories/all/full` **GET** - get all categories *with* it's dishes. Returns array of [CategoryFull](./objects.md/#categoryfull) objects
 
-`categories/<int>/info` **GET** - get name and photo url for the
- exact category
+`categories/<int>` **GET** - get exact category by it's id. Returns [Category](./objects.md/#category) object
 
-`categories/<int>/dishes` **GET** - get name, category and photo url for the
- exact dish
+`categories/<int>/info` **GET** - get name and photo url for the exact category
+
+`categories/<int>/dishes` **GET** - get name, category and photo url for the exact dish. Returns array of [Category](./objects.md/#category) objects
 
 # Dishes
 
-`dishes/all` **GET** - get full list of dishes *without* included parameters
- like ingredients etc.
+`dishes/all` **GET** - get full list of dishes *without* included parameters like ingredients etc. Returns array of [Dish](./objects.md/#dish) objects
 
 `dishes/all/full` **GET** - get full list of dishes *with* all included parameters
  like ingredients etc.
