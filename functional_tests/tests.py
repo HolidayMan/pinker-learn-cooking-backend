@@ -15,7 +15,7 @@ class ApiTest(LiveServerTestCase):
     def assertNotEmpty(self, list_to_check, msg=None):
         return self.assertNotEqual(len(list_to_check), 0, msg=f"{list_to_check} is empty")
 
-    def test_categories(self):
+    def test_categories_all(self):
         # разработчик хочет получить все категории, но без доп. информации.
         # нужен просто массив словарей, в которых были бы описаны категории
 
@@ -25,3 +25,16 @@ class ApiTest(LiveServerTestCase):
             self.assertIn("id", category, msg=f'No "id" key was found in {category}')
             self.assertIn("image_url", category, msg=f'No "image_url" key was found in {category}')
             self.assertIn("name", category, msg=f'No "name" key was found in {category}')
+
+    def test_categories_all_full(self):
+        # разработчик хочет получить все категории вместе со всеми вложенными блюдами
+        # нужен массив словарей с категориями и в них поле "dishes", в котором бы описывались блюда
+
+        json_data = self.get_json('/api/v1/categories/all/full')
+        self.assertNotEmpty(json_data)
+
+        for category in json_data:
+            self.assertIn("id", category, msg=f'No "id" key was found in {category}')
+            self.assertIn("image_url", category, msg=f'No "image_url" key was found in {category}')
+            self.assertIn("name", category, msg=f'No "name" key was found in {category}')
+            self.assertIn("dishes", category, msg=f'No "dishes" key was found in {category}')

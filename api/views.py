@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import UserSerializer, CategorySerializer
+from .serializers import UserSerializer, CategorySerializer, CategoryFullSerializer
 from .models import Category
 
 
@@ -17,9 +17,13 @@ class UsersView(APIView):
 
 class CategoryAllView(APIView):
     """view for /category/all"""
+    full = False
 
     def get(self, request):
         objects = Category.objects.all()
-        serializer = CategorySerializer(objects, many=True)
+        if self.full:
+            serializer = CategoryFullSerializer(objects, many=True)
+        else:
+            serializer = CategorySerializer(objects, many=True)
         return Response(serializer.data, status=200)
 

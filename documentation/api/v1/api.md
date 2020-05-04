@@ -9,7 +9,7 @@ All the next urls will be relative to base url
 `categories/<int>` **GET** - get exact category by it's id
 
 `categories/<int>/info` **GET** - get name and photo url for the
- exact dish
+ exact category
 
 `categories/<int>/dishes` **GET** - get name, category and photo url for the
  exact dish
