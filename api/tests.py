@@ -15,4 +15,3 @@ class CategoriesTests(APITestCase):
         response = self.client.get(url)
         self.assertIsInstance(response.json(), list)
         self.assertEqual(response.json(), CategorySerializer(Category.objects.all(), many=True).data)
-
