@@ -3,7 +3,7 @@ from random import choice
 from rest_framework import status
 from django.test import LiveServerTestCase
 from rest_framework.test import APIClient
-from api.models import Category
+from api.models import Category, Dish
 
 
 class ApiTest(LiveServerTestCase):
@@ -131,3 +131,23 @@ class ApiTest(LiveServerTestCase):
 
         for dish in json_data:
             self.check_keys_in_dict(dish, 'id', 'image_url', 'category', 'name', 'ingredients')
+
+    def test_exact_category(self):
+        """testing /api/v1/dishes/<int>"""
+
+        # разработчик имеет id блюда и хочет получить ссылку на его фото и название
+
+        # получаем id блюда
+        # сделаем это через БД, заодно будет вся инфа о блюде
+
+        dish = choice(Dish.objects.all())
+        dish_id = dish.id
+
+        json_data = self.get_json(f'/api/v1/dishes/{dish_id}')
+        self.assertIsInstance(json_data, dict)
+        self.check_keys_in_dict(json_data, 'id', 'image_url', 'name', 'category')
+        self.assertEqual(json_data.get('id'), dish.id)
+        self.assertEqual(json_data.get('image_url'), dish.image.url)
+        self.assertEqual(json_data.get('name'), dish.name)
+        self.assertIsInstance(json_data.get('category'), dict)
+        self.check_response_status(f'/api/v1/dishes/{Dish.objects.count() + 10}', status.HTTP_404_NOT_FOUND)

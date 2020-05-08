@@ -52,3 +52,18 @@ class DishView(APIView):
             serializer = DishSerializer(dishes, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ExactDishView(APIView):
+
+    def get(self, request, dish_id):
+        try:
+            dish = Dish.objects.get(id=dish_id)
+        except Dish.DoesNotExist:
+            return Response({
+                "status": status.HTTP_404_NOT_FOUND,
+                "info": f"Dish with id {dish_id} does not exist"
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = DishSerializer(dish)
+        return Response(serializer.data, status=status.HTTP_200_OK)
