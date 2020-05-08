@@ -11,7 +11,9 @@ All the next urls will be relative to base url
 
 `categories/<int>/full` **GET** - get name and photo url for the exact category
 
-`categories/<int>/dishes` **GET** - get name, category and photo url for the exact dish. Returns array of [Category](./objects.md/#category) objects
+`categories/<int>/dishes` **GET** - returns array of [Dish](./objects.md/#dish) objects, related to exact category
+
+`categories/<int>/dishes/full` **GET** - returns array of [DishFull](./objects.md/#dishfull) objects, related to exact category
 
 # Dishes
 
