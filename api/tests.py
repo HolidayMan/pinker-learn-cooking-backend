@@ -119,3 +119,16 @@ class CategoriesTests(APITestCase):
         self.assertIsInstance(response.json(), list)
         self.assertEqual(response.json(), DishFullSerializer(dishes, many=True).data)
         self.check_response_status(reverse('exact-category-dishes', kwargs={'category_id': 100}), status.HTTP_404_NOT_FOUND)
+
+
+class DishesEndpointsTest(APITestCase):
+    fixtures = ["categories.json", "dishes.json", "ingredient.json", "dishingredient.json"]
+
+    def check_response_status(self, url, status):
+        self.assertEqual(self.client.get(url).status_code, status)
+
+    def test_dishes_all(self):
+        url = reverse('dishes-all')
+        response = self.client.get(url)
+        self.assertIsInstance(response.json(), list)
+        self.assertEqual(response.json(), DishSerializer(Dish.objects.all(), many=True).data)

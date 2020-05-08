@@ -14,7 +14,12 @@ class ApiTest(LiveServerTestCase):
 
     def get_json(self, url):
         """makes GET request to server_url + url"""
-        return self.client.get(url).json()
+
+        response = self.client.get(url)
+        try:
+            return response.json()
+        except ValueError as e:
+           raise ValueError(str(e) + f". (Server returned {response.status_code})")
 
     def assertNotEmpty(self, list_to_check, msg=None):
         if not msg:
@@ -90,7 +95,7 @@ class ApiTest(LiveServerTestCase):
     def test_exact_category_dishes(self):
         """testing /api/v1/categories/<int>/dishes"""
 
-        # разработчик имеет id категории и хочет её блюда
+        # разработчик имеет id категории и хочет получить её блюда
 
         # получаем id категории
         # сделаем это через БД, заодно будет вся инфа о категории
@@ -103,3 +108,14 @@ class ApiTest(LiveServerTestCase):
             self.check_keys_in_dict(dish, 'id', 'image_url', 'name', 'category', 'ingredients')
 
         self.check_response_status(f'/api/v1/categories/{Category.objects.count() + 10}/dishes', status.HTTP_404_NOT_FOUND)
+
+    def test_dishes_all(self):
+        """testing /api/v1/dishes/all"""
+
+        # разработчик хочет получить все блюда, но без доп. информации.
+        # нужен просто массив словарей, в которых были бы описаны блюда
+
+        json_data = self.get_json('/api/v1/dishes/all')
+        self.assertNotEmpty(json_data)
+        for dish in json_data:
+            self.check_keys_in_dict(dish, 'id', 'image_url', 'name', 'category')
