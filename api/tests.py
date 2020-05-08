@@ -148,4 +148,8 @@ class DishesEndpointsTest(APITestCase):
 
     def test_exact_dish(self):
         self.exact_dish_tester('exact-dish', dict, DishSerializer)
-        self.check_response_status(reverse('exact-dish', kwargs={'dish_id': 100}), status.HTTP_404_NOT_FOUND)
+        self.check_response_status(reverse('exact-dish', kwargs={'dish_id': Dish.objects.count() + 10000}), status.HTTP_404_NOT_FOUND)
+
+    def test_exact_dish_full(self):
+        self.exact_dish_tester('exact-dish-full', dict, DishFullSerializer)
+        self.check_response_status(reverse('exact-dish-full', kwargs={'dish_id':  Dish.objects.count() + 10000}), status.HTTP_404_NOT_FOUND)

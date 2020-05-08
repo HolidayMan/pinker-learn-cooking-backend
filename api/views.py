@@ -55,6 +55,7 @@ class DishView(APIView):
 
 
 class ExactDishView(APIView):
+    full = False
 
     def get(self, request, dish_id):
         try:
@@ -64,6 +65,8 @@ class ExactDishView(APIView):
                 "status": status.HTTP_404_NOT_FOUND,
                 "info": f"Dish with id {dish_id} does not exist"
             }, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = DishSerializer(dish)
+        if self.full:
+            serializer = DishFullSerializer(dish)
+        else:
+            serializer = DishSerializer(dish)
         return Response(serializer.data, status=status.HTTP_200_OK)
