@@ -1,8 +1,8 @@
-from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import status
 
-from .serializers import CategorySerializer, CategoryFullSerializer
+from .serializers import CategorySerializer, CategoryFullSerializer, DishSerializer
 from .models import Category
 
 
@@ -16,17 +16,26 @@ class CategoryAllView(APIView):
             serializer = CategoryFullSerializer(objects, many=True)
         else:
             serializer = CategorySerializer(objects, many=True)
-        return Response(serializer.data, status=200)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ExactCategoryView(APIView):
     """view for /category/<int:id> and /category/<int:id>/full"""
     full = False
+    dishes = False
 
     def get(self, request, category_id):
-        category = Category.objects.get(id=category_id)
+        try:
+            category = Category.objects.get(id=category_id)
+        except Category.DoesNotExist:
+            return Response({
+                "status": status.HTTP_404_NOT_FOUND,
+                "info": f"Category with id {category_id} does not exist"
+            }, status=status.HTTP_404_NOT_FOUND)
         if self.full:
             serializer = CategoryFullSerializer(category)
+        elif self.dishes:
+            serializer = DishSerializer(category.dishes, many=True)
         else:
             serializer = CategorySerializer(category)
-        return Response(serializer.data, status=200)
+        return Response(serializer.data, status=status.HTTP_200_OK)

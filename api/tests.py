@@ -2,6 +2,7 @@ from random import choice
 
 from django.urls import reverse
 
+from rest_framework import status
 from rest_framework.test import APITestCase
 from .models import Category, Ingredient, Dish
 from .serializers import CategorySerializer, CategoryFullSerializer, DishSerializer
@@ -59,6 +60,16 @@ class CategoriesTests(APITestCase):
     def setUp(self):
         pass
 
+    def check_response_status(self, url, status):
+        self.assertEqual(self.client.get(url).status_code, status)
+
+    def exact_category_tester(self, url_name, is_instance, serializer):
+        category = choice(Category.objects.all())
+        url = reverse(url_name, kwargs={'category_id': category.id})
+        response = self.client.get(url)
+        self.assertIsInstance(response.json(), is_instance)
+        self.assertEqual(response.json(), serializer(category).data)
+
     def test_categories_all(self):
         url = reverse('categories-all')
         response = self.client.get(url)
@@ -72,15 +83,18 @@ class CategoriesTests(APITestCase):
         self.assertEqual(response.json(), CategoryFullSerializer(Category.objects.all(), many=True).data)
 
     def test_exact_category(self):
-        category = choice(Category.objects.all())
-        url = reverse('exact-category', kwargs={'category_id': category.id})
-        response = self.client.get(url)
-        self.assertIsInstance(response.json(), dict)
-        self.assertEqual(response.json(), CategorySerializer(category).data)
+        self.exact_category_tester('exact-category', dict, CategorySerializer)
+        self.check_response_status(reverse('exact-category', kwargs={'category_id': 100}), status.HTTP_404_NOT_FOUND)
 
     def test_exact_category_full(self):
+        self.exact_category_tester('exact-category-full', dict, CategoryFullSerializer)
+        self.check_response_status(reverse('exact-category-full', kwargs={'category_id': 100}), status.HTTP_404_NOT_FOUND)
+
+    def test_exact_category_dishes(self):
         category = choice(Category.objects.all())
-        url = reverse('exact-category-full', kwargs={'category_id': category.id})
+        dishes = category.dishes
+        url = reverse('exact-category-dishes', kwargs={'category_id': category.id})
         response = self.client.get(url)
-        self.assertIsInstance(response.json(), dict)
-        self.assertEqual(response.json(), CategoryFullSerializer(category).data)
+        self.assertIsInstance(response.json(), list)
+        self.assertEqual(response.json(), DishSerializer(dishes, many=True).data)
+        self.check_response_status(reverse('exact-category-dishes', kwargs={'category_id': 100}), status.HTTP_404_NOT_FOUND)

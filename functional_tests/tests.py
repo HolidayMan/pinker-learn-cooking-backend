@@ -1,5 +1,6 @@
 from random import choice
 
+from rest_framework import status
 from django.test import LiveServerTestCase
 from rest_framework.test import APIClient
 from api.models import Category
@@ -24,6 +25,9 @@ class ApiTest(LiveServerTestCase):
     def check_keys_in_dict(self, dictionary, *keys):
         for key in keys:
             self.assertIn(key, dictionary, msg=f'No "{key}" key was found in {dictionary}')
+
+    def check_response_status(self, url, status):
+        self.assertEqual(self.client.get(url).status_code, status)
 
     def test_categories_all(self):
         """testing /api/v1/categories/all"""
@@ -64,14 +68,15 @@ class ApiTest(LiveServerTestCase):
         self.assertEqual(json_data.get('image_url'), category.image.url)
         self.assertEqual(json_data.get('name'), category.name)
 
+        self.check_response_status(f'/api/v1/categories/{Category.objects.count() + 10}', status.HTTP_404_NOT_FOUND)
+
     def test_exact_category_full(self):
         """testing /api/v1/categories/<int>/full"""
 
-        # разработчик имеет id категории и хочет получить ссылку на её фото, название и все
+        # разработчик имеет id категории и хочет получить ссылку на её фото, название и все блюда
 
         # получаем id категории
         # сделаем это через БД, заодно будет вся инфа о категории
-
         category = choice(Category.objects.all())
         category_id = category.id
 
@@ -79,3 +84,22 @@ class ApiTest(LiveServerTestCase):
         self.assertIsInstance(json_data, dict)
         self.check_keys_in_dict(json_data, 'id', 'image_url', 'name', 'dishes')
         self.assertIsInstance(json_data['dishes'], list)
+
+        self.check_response_status(f'/api/v1/categories/{Category.objects.count() + 10}/full', status.HTTP_404_NOT_FOUND)
+
+    def test_exact_category_dishes(self):
+        """testing /api/v1/categories/<int>/dishes"""
+
+        # разработчик имеет id категории и хочет её блюда
+
+        # получаем id категории
+        # сделаем это через БД, заодно будет вся инфа о категории
+        category = choice(Category.objects.all())
+        category_id = category.id
+
+        json_data = self.get_json(f'/api/v1/categories/{category_id}/dishes')
+        self.assertIsInstance(json_data, list)
+        for dish in json_data:
+            self.check_keys_in_dict(dish, 'id', 'image_url', 'name', 'category')
+
+        self.check_response_status(f'/api/v1/categories/{Category.objects.count() + 10}/dishes', status.HTTP_404_NOT_FOUND)
