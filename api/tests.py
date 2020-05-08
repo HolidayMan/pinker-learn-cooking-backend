@@ -39,7 +39,7 @@ class CategoriesSerializersTest(APITestCase):
         self.assertEqual(json_data["id"], model.id)
         self.assertEqual(json_data["name"], model.name)
         self.assertEqual(json_data["image_url"], model.image.url)
-        self.assertIn("dishes", json_data)
+        self.assertEqual(json_data["dishes"], DishSerializer(model.dishes, many=True).data)
 
 
 class IngredientSerializerTest(APITestCase):
@@ -132,3 +132,9 @@ class DishesEndpointsTest(APITestCase):
         response = self.client.get(url)
         self.assertIsInstance(response.json(), list)
         self.assertEqual(response.json(), DishSerializer(Dish.objects.all(), many=True).data)
+
+    def test_dishes_all_full(self):
+        url = reverse('dishes-all-full')
+        response = self.client.get(url)
+        self.assertIsInstance(response.json(), list)
+        self.assertEqual(response.json(), DishFullSerializer(Dish.objects.all(), many=True).data)

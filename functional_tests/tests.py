@@ -119,3 +119,15 @@ class ApiTest(LiveServerTestCase):
         self.assertNotEmpty(json_data)
         for dish in json_data:
             self.check_keys_in_dict(dish, 'id', 'image_url', 'name', 'category')
+
+    def test_dishes_all_full(self):
+        """testing /api/v1/dishes/all/full"""
+
+        # разработчик хочет получить все категории вместе со всеми игридиентами
+        # нужен массив словарей с блюдами и в них поле "ingredients", в котором бы описывались ингридиенты
+
+        json_data = self.get_json('/api/v1/dishes/all/full')
+        self.assertNotEmpty(json_data)
+
+        for dish in json_data:
+            self.check_keys_in_dict(dish, 'id', 'image_url', 'category', 'name', 'ingredients')

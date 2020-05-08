@@ -46,7 +46,9 @@ class DishView(APIView):
 
     def get(self, request):
         dishes = Dish.objects.all()
-
-        serializer = DishSerializer(dishes, many=True)
+        if self.full:
+            serializer = DishFullSerializer(dishes, many=True)
+        else:
+            serializer = DishSerializer(dishes, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
