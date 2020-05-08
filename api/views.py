@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
-from .serializers import CategorySerializer, CategoryFullSerializer, DishSerializer
+from .serializers import CategorySerializer, CategoryFullSerializer, DishSerializer, DishFullSerializer
 from .models import Category
 
 
@@ -35,7 +35,7 @@ class ExactCategoryView(APIView):
         if self.full:
             serializer = CategoryFullSerializer(category)
         elif self.dishes:
-            serializer = DishSerializer(category.dishes, many=True)
+            serializer = DishFullSerializer(category.dishes, many=True)
         else:
             serializer = CategorySerializer(category)
         return Response(serializer.data, status=status.HTTP_200_OK)

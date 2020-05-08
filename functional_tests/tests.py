@@ -100,6 +100,6 @@ class ApiTest(LiveServerTestCase):
         json_data = self.get_json(f'/api/v1/categories/{category_id}/dishes')
         self.assertIsInstance(json_data, list)
         for dish in json_data:
-            self.check_keys_in_dict(dish, 'id', 'image_url', 'name', 'category')
+            self.check_keys_in_dict(dish, 'id', 'image_url', 'name', 'category', 'ingredients')
 
         self.check_response_status(f'/api/v1/categories/{Category.objects.count() + 10}/dishes', status.HTTP_404_NOT_FOUND)

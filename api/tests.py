@@ -4,8 +4,8 @@ from django.urls import reverse
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-from .models import Category, Ingredient, Dish
-from .serializers import CategorySerializer, CategoryFullSerializer, DishSerializer
+from .models import Category, Ingredient, Dish, DishIngredient
+from .serializers import CategorySerializer, CategoryFullSerializer, DishSerializer, DishFullSerializer, IngredientSerializer
 
 
 class CategoriesSerializersTest(APITestCase):
@@ -42,6 +42,18 @@ class CategoriesSerializersTest(APITestCase):
         self.assertIn("dishes", json_data)
 
 
+class IngredientSerializerTest(APITestCase):
+    fixtures = ["categories.json", "dishes.json", "ingredient.json", "dishingredient.json"]
+
+    def test_ingredient_serializer(self):
+        dish = choice(Dish.objects.all())
+        ingredients = DishIngredient.objects.filter(dish=dish)
+        json_data = IngredientSerializer(ingredients, many=True).data
+        for serialized_ingredient, ingredient in zip(json_data, ingredients):
+            self.assertEqual(serialized_ingredient["name"], ingredient.ingredient.name)
+            self.assertEqual(serialized_ingredient["amount"], ingredient.amount)
+
+
 class DishesSerializerTest(APITestCase):
     fixtures = ["categories.json", "dishes.json", "ingredient.json", "dishingredient.json"]
 
@@ -52,6 +64,15 @@ class DishesSerializerTest(APITestCase):
         self.assertEqual(json_data["name"], model.name)
         self.assertEqual(json_data["image_url"], model.image.url)
         self.assertEqual(json_data["category"], CategorySerializer(model.category).data)
+
+    def test_dish_full_serializer(self):
+        model = Dish.objects.first()
+        json_data = DishFullSerializer(model).data
+        self.assertEqual(json_data["id"], model.id)
+        self.assertEqual(json_data["name"], model.name)
+        self.assertEqual(json_data["image_url"], model.image.url)
+        self.assertEqual(json_data["category"], CategorySerializer(model.category).data)
+        self.assertEqual(json_data["ingredients"], IngredientSerializer(DishIngredient.objects.filter(dish=model), many=True).data)
 
 
 class CategoriesTests(APITestCase):
@@ -96,5 +117,5 @@ class CategoriesTests(APITestCase):
         url = reverse('exact-category-dishes', kwargs={'category_id': category.id})
         response = self.client.get(url)
         self.assertIsInstance(response.json(), list)
-        self.assertEqual(response.json(), DishSerializer(dishes, many=True).data)
+        self.assertEqual(response.json(), DishFullSerializer(dishes, many=True).data)
         self.check_response_status(reverse('exact-category-dishes', kwargs={'category_id': 100}), status.HTTP_404_NOT_FOUND)
