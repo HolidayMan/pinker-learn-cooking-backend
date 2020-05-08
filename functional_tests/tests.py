@@ -172,3 +172,22 @@ class ApiTest(LiveServerTestCase):
         self.assertIsInstance(json_data.get('category'), dict)
         self.assertIsInstance(json_data.get('ingredients'), list)
         self.check_response_status(f'/api/v1/dishes/{Dish.objects.count() + 10}/full', status.HTTP_404_NOT_FOUND)
+
+    def test_exact_dish_category(self):
+        """testing /api/v1/dishes/<int>/category"""
+
+        # разработчик имеет id блюда и хочет получить его категорию (Category)
+
+        # получаем id блюда
+        # сделаем это через БД, заодно будет вся инфа о блюде
+        dish = choice(Dish.objects.all())
+        dish_id = dish.id
+
+        json_data = self.get_json(f'/api/v1/dishes/{dish_id}/category')
+        self.assertIsInstance(json_data, dict)
+        self.check_keys_in_dict(json_data, 'id', 'image_url', 'name')
+        self.assertEqual(json_data.get("id"), dish.category.id)
+        self.assertEqual(json_data.get("image_url"), dish.category.image.url)
+        self.assertEqual(json_data.get("name"), dish.category.name)
+        self.check_response_status(f'/api/v1/dishes/{Dish.objects.count() + 10}/category',
+                                   status.HTTP_404_NOT_FOUND)

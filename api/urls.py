@@ -11,4 +11,5 @@ urlpatterns = [
     re_path(r'dishes/all/full?$', DishView.as_view(full=True), name='dishes-all-full'),
     re_path(r'dishes/(?P<dish_id>[0-9]+)/?$', ExactDishView.as_view(), name="exact-dish"),
     re_path(r'dishes/(?P<dish_id>[0-9]+)/full/?$', ExactDishView.as_view(full=True), name="exact-dish-full"),
+    re_path(r'dishes/(?P<dish_id>[0-9]+)/category/?$', ExactDishView.as_view(category=True), name="exact-dish-category"),
 ]
