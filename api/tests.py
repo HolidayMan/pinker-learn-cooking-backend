@@ -77,3 +77,10 @@ class CategoriesTests(APITestCase):
         response = self.client.get(url)
         self.assertIsInstance(response.json(), dict)
         self.assertEqual(response.json(), CategorySerializer(category).data)
+
+    def test_exact_category_full(self):
+        category = choice(Category.objects.all())
+        url = reverse('exact-category-full', kwargs={'category_id': category.id})
+        response = self.client.get(url)
+        self.assertIsInstance(response.json(), dict)
+        self.assertEqual(response.json(), CategoryFullSerializer(category).data)

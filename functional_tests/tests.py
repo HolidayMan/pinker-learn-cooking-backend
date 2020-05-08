@@ -63,3 +63,19 @@ class ApiTest(LiveServerTestCase):
         self.assertEqual(json_data.get('id'), category.id)
         self.assertEqual(json_data.get('image_url'), category.image.url)
         self.assertEqual(json_data.get('name'), category.name)
+
+    def test_exact_category_full(self):
+        """testing /api/v1/categories/<int>/full"""
+
+        # разработчик имеет id категории и хочет получить ссылку на её фото, название и все
+
+        # получаем id категории
+        # сделаем это через БД, заодно будет вся инфа о категории
+
+        category = choice(Category.objects.all())
+        category_id = category.id
+
+        json_data = self.get_json(f'/api/v1/categories/{category_id}/full')
+        self.assertIsInstance(json_data, dict)
+        self.check_keys_in_dict(json_data, 'id', 'image_url', 'name', 'dishes')
+        self.assertIsInstance(json_data['dishes'], list)

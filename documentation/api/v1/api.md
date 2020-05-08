@@ -9,7 +9,7 @@ All the next urls will be relative to base url
 
 `categories/<int>` **GET** - get exact category by it's id. Returns [Category](./objects.md/#category) object
 
-`categories/<int>/info` **GET** - get name and photo url for the exact category
+`categories/<int>/full` **GET** - get name and photo url for the exact category
 
 `categories/<int>/dishes` **GET** - get name, category and photo url for the exact dish. Returns array of [Category](./objects.md/#category) objects
 

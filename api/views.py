@@ -20,9 +20,13 @@ class CategoryAllView(APIView):
 
 
 class ExactCategoryView(APIView):
-    """view for  /category/<int:id>"""
+    """view for /category/<int:id> and /category/<int:id>/full"""
+    full = False
 
     def get(self, request, category_id):
         category = Category.objects.get(id=category_id)
-        serializer = CategorySerializer(category)
+        if self.full:
+            serializer = CategoryFullSerializer(category)
+        else:
+            serializer = CategorySerializer(category)
         return Response(serializer.data, status=200)
