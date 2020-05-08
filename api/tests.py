@@ -1,5 +1,7 @@
+from random import choice
+
 from django.urls import reverse
-from rest_framework import status
+
 from rest_framework.test import APITestCase
 from .models import Category, Ingredient, Dish
 from .serializers import CategorySerializer, CategoryFullSerializer, DishSerializer
@@ -68,3 +70,10 @@ class CategoriesTests(APITestCase):
         response = self.client.get(url)
         self.assertIsInstance(response.json(), list)
         self.assertEqual(response.json(), CategoryFullSerializer(Category.objects.all(), many=True).data)
+
+    def test_exact_category(self):
+        category = choice(Category.objects.all())
+        url = reverse('exact-category', kwargs={'category_id': category.id})
+        response = self.client.get(url)
+        self.assertIsInstance(response.json(), dict)
+        self.assertEqual(response.json(), CategorySerializer(category).data)

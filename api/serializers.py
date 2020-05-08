@@ -3,12 +3,6 @@ from rest_framework import serializers
 from .models import Category, Dish
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'groups']
-
-
 class CategorySerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField('get_image_url')
 
