@@ -7,8 +7,8 @@ Backend for pinker-learn-cooking app
   2. `./manage.py makemigrations`
   3. `./manage.py migrate`
   4. `./manage.py loaddata fixtures/categories.json`
-  5. `./manage.py loaddata fixturesdishes.json`
-  6. `./manage.py loaddata fixturesingredient.json`
-  7. `./manage.py loaddata fixturesdishingredient.json`
+  5. `./manage.py loaddata fixtures/dishes.json`
+  6. `./manage.py loaddata fixtures/ingredient.json`
+  7. `./manage.py loaddata fixtures/dishingredient.json`
 
 Пользуемся!
