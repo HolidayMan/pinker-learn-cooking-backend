@@ -42,4 +42,3 @@ Field     | Type                       | Desription
 :-------- | :------------------------: | :----------------------------          
 name      | string                     | *name* of ingredient. For instance `Крабовые палочки`
 amount    | string                     | *amount* of ingredient. For example `200 г` 
-dish      | string                     | *image_url* of dish's image
